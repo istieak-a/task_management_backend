@@ -10,7 +10,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.put('/:projectId/addClass', authMiddleware.verifymanagerToken, classContoller.createClass);
 router.post('/:projectId/:classId/editClass',authMiddleware.verifymanagerToken,classContoller.editClass);
 router.delete('/:projectId/:classId/deleteClass',authMiddleware.verifymanagerToken,classContoller.deleteClass);
-router.get('/:projectId',authMiddleware.verifymanagerToken,classContoller.getAllClassesByManager);
+router.get('/:projectId',authMiddleware.verifyAdminManagerUserToken,classContoller.getAllClassesByManager);
 router.get('/:projectId/:classId',authMiddleware.verifymanagerToken,classContoller.getClassById);
 
 

@@ -11,7 +11,11 @@ router.post('/userlogin', authController.userlogin);
 router.post('/managerlogin', authController.managerlogin);
 router.post('/adminlogin', authController.adminlogin);
 
-
+router.get('/getprojectManager', authMiddleware.verifyAdminManagerUserToken, authController.getProjectManager);
+router.get('/getAllmember', authMiddleware.verifyAdminManagerUserToken, authController.getAllMember);
+router.get('/adminname',authMiddleware.verifyadminToken, authController.getAdminName);
+router.get('/username',authMiddleware.verifyAdminManagerUserToken, authController.getUserName);
+router.get('/role',authMiddleware.verifyAdminManagerUserToken, authController.getUserRole);
 module.exports = router;
 
 

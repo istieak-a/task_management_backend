@@ -174,6 +174,7 @@ const getClassById = async (req, res) => {
       const classId = req.params.classId;
       const projectManager = req.user;
       const { addedUsers } = req.body;
+      console.log('Request Body:', req.body);
   
       const project = await Project.findById(projectId);
   
@@ -235,6 +236,10 @@ const getClassById = async (req, res) => {
         return res.status(404).json({ message: 'Class not found in the project' });
       }
   
+      // Ensure that foundClass.assignedUsers is an array
+      if (!Array.isArray(foundClass.assignedUsers)) {
+        return res.status(500).json({ message: 'Invalid data format for assignedUsers' });
+      }
       // Remove users from the class by username
       foundClass.assignedUsers = foundClass.assignedUsers.filter(
         user => !deletedUsers.includes(user.username)

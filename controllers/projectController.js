@@ -150,6 +150,7 @@ const getProjectById = async (req, res) => {
 
   const addProjectManagerToProject = async (req, res) => {
     try {
+      console.log('Received request to add project manager:', req.params, req.body);
       const admin = req.user;
       const projectId = req.params.projectId;
       const projectManagerNames = req.body.projectManagerNames; // Change to projectManagerNames (an array)
@@ -196,41 +197,59 @@ const getProjectById = async (req, res) => {
   };
 
   const removeProjectManagersFromProject = async (req, res) => {
-    try {
-      const projectId = req.params.projectId;
-      const { projectManagerNames } = req.body;
-  
-      const project = await Project.findById(projectId);
-  
-      if (!project) {
-        return res.status(404).json({ message: 'Project not found' });
-      }
-  
-      // Extract manager IDs to be deleted from the project
-      const managersToDeleteIds = projectManagerNames.map(managerName => {
-        const managerToDelete = project.projectManagers.find(manager => manager.username === managerName);
-        return managerToDelete ? managerToDelete._id : null;
-      });
-  
-      // Remove manager IDs from the projectManagers array
-      project.projectManagers = project.projectManagers.filter(manager => !managersToDeleteIds.includes(manager._id));
-  
-      // Save the updated project document
-      await project.save();
-  
-      res.status(200).json({
-        message: 'Project manager(s) removed successfully',
-        project: project,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
+  try {
+    const projectId = req.params.projectId;
+    const { projectManagerNames } = req.body;
+
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
     }
-  };
+
+    // Ensure that projectManagerNames is an array
+    if (!Array.isArray(projectManagerNames)) {
+      return res.status(400).json({ message: 'Invalid data format: projectManagerNames must be an array' });
+    }
+
+    // Extract manager IDs to be deleted from the project
+    const managersToDeleteIds = projectManagerNames.map(managerName => {
+      const managerToDelete = project.projectManagers.find(manager => manager.username === managerName);
+      return managerToDelete ? managerToDelete._id : null;
+    });
+
+    // Remove manager IDs from the projectManagers array
+    project.projectManagers = project.projectManagers.filter(manager => !managersToDeleteIds.includes(manager._id));
+
+    // Save the updated project document
+    await project.save();
+
+    res.status(200).json({
+      message: 'Project manager(s) removed successfully',
+      project: project,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
   
   const getAllProjectManagers = async (req, res) => {
     try {
-      const projectManagers = await ProjectManager.find({}, 'username _id');
+      const projectId = req.params.projectId;
+
+       const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    // Extract project managers' details from the project
+    const projectManagers = project.projectManagers.map(manager => ({
+      _id: manager._id,
+      username: manager.username
+    }));
   
       res.status(200).json({ projectManagers });
     } catch (error) {
@@ -262,11 +281,10 @@ const getProjectById = async (req, res) => {
     }
   };
   
-  
-
+ 
 
 module.exports = {
-   createProject, 
+  createProject, 
   getProjectById, 
   getAllProjects ,
   addProjectManagerToProject,
@@ -274,6 +292,5 @@ module.exports = {
   removeProjectManagersFromProject,
   deleteProject,
   getAllProjectManagers,
-  getProjectManagerById
-
+  getProjectManagerById,
 };
