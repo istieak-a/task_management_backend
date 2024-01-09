@@ -205,7 +205,7 @@ const verifyAdminManagerUserToken = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'yourSecretKey');
 
     const userType = decoded.role; // Assuming roles in the token represent the user type
-    console.log('usertype', userType);
+    console.log('usertypeAMU', userType);
 
     let user;
     switch (userType) {

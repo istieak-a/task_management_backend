@@ -217,42 +217,46 @@ const getClassById = async (req, res) => {
     }
   };
   
-  const deleteUsersFromClass = async (req, res) => {
-    try {
-      const projectId = req.params.projectId;
-      const classId = req.params.classId;
-      const projectManager = req.user;
-      const { deletedUsers } = req.body;
-  
-      const project = await Project.findById(projectId);
-  
-      if (!project) {
-        return res.status(404).json({ message: 'Project not found' });
-      }
-  
-      const foundClass = project.classes.find(cls => cls._id.equals(classId));
-  
-      if (!foundClass) {
-        return res.status(404).json({ message: 'Class not found in the project' });
-      }
-  
-      // Ensure that foundClass.assignedUsers is an array
-      if (!Array.isArray(foundClass.assignedUsers)) {
-        return res.status(500).json({ message: 'Invalid data format for assignedUsers' });
-      }
-      // Remove users from the class by username
-      foundClass.assignedUsers = foundClass.assignedUsers.filter(
-        user => !deletedUsers.includes(user.username)
-      );
-  
-      await project.save();
-  
-      res.status(200).json({ message: 'Users deleted from class successfully', class: foundClass });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
+const deleteUsersFromClass = async (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+    const classId = req.params.classId;
+    const projectManager = req.user;
+    const { deletedUsers } = req.body;
+
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
     }
-  };
+
+    const foundClass = project.classes.find(cls => cls._id.equals(classId));
+
+    if (!foundClass) {
+      return res.status(404).json({ message: 'Class not found in the project' });
+    }
+
+    // Ensure that foundClass.assignedUsers is an array
+    if (!Array.isArray(foundClass.assignedUsers)) {
+      return res.status(500).json({ message: 'Invalid data format for assignedUsers' });
+    }
+
+    // Remove users from the class by username
+    foundClass.assignedUsers = foundClass.assignedUsers.filter(
+      user => !deletedUsers.includes(user.username)
+    );
+
+    console.log('Deleting users from class:', deletedUsers);
+    await project.save();
+
+    res.status(200).json({ message: 'Users deleted from class successfully', class: foundClass });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
 
   const getAllUsersInClass = async (req, res) => {
     try {
@@ -394,13 +398,14 @@ await project.save();
         return res.status(404).json({ message: 'Task not found in the class' });
       }
   
-      const { title, description, dueDate } = req.body.updatedDetails;
-  
-      // Update task details
-      foundTask.title = title;
-      foundTask.description = description;
-      foundTask.dueDate = dueDate;
-  
+      const { title, description, dueDate, status } = req.body.updatedDetails;
+
+        // Update task details
+        foundTask.title = title;
+        foundTask.description = description;
+        foundTask.dueDate = dueDate;
+        foundTask.status = status; 
+      
       // Save the updated project document
       await project.save();
   
