@@ -221,7 +221,7 @@ const verifyAdminManagerUserToken = async (req, res, next) => {
       default:
         return res.status(401).json({ message: 'Unauthorized: Invalid user type' });
     }
-    console.log('user', user);
+    console.log('user detail', user);
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized: User not found' });
     }

@@ -121,15 +121,16 @@ const deleteClass = async (req, res) => {
     }
   };
 // Controller function to get all classes by manager
-const getAllClassesByManager = async (req, res) => {
+const getAllClasses = async (req, res) => {
     try {
       const { projectId } = req.params;
-      const manager = req.user; // Assuming you have authentication middleware
-  
+      const user = req.user;
+      console.log('User in getall:', user);
       // Find the project
-      const project = await Project.findOne({ _id: projectId, 'projectManagers._id': manager._id })
+      const project = await Project.findOne({ _id: projectId})
         .select('classes');
-  
+      console.log('Project: gAC', project);
+
       if (!project) {
         return res.status(403).json({ message: 'Unauthorized: You are not assigned to this project' });
       }
@@ -145,10 +146,10 @@ const getAllClassesByManager = async (req, res) => {
 const getClassById = async (req, res) => {
     try {
       const { projectId, classId } = req.params;
-      const manager = req.user; // Assuming you have authentication middleware
+      const user = req.user; // Assuming you have authentication middleware
   
       // Find the project
-      const project = await Project.findOne({ _id: projectId, 'projectManagers._id': manager._id });
+      const project = await Project.findOne({ _id: projectId});
   
       if (!project) {
         return res.status(403).json({ message: 'Unauthorized: You are not assigned to this project' });
@@ -262,7 +263,7 @@ const deleteUsersFromClass = async (req, res) => {
     try {
       const projectId = req.params.projectId;
       const classId = req.params.classId;
-      const projectManager = req.user;
+      const user = req.user;
   
       const project = await Project.findById(projectId);
   
@@ -313,11 +314,14 @@ const deleteUsersFromClass = async (req, res) => {
     if (existingTask) {
       return res.status(400).json({ message: 'Task with the same title already exists in the class' });
     }
+      // Format the dueDate before creating the new task
+    const formattedDueDate = dueDate ? new Date(dueDate).toISOString().split('T')[0] : null;
+    
       // Create a new task
       const newTask = {
         title,
         description,
-        dueDate,
+        dueDate:formattedDueDate,
         assignedUsers: [],
         status: 'todo', // You can set a default status or modify based on your requirements
         assignedBy: {
@@ -326,47 +330,47 @@ const deleteUsersFromClass = async (req, res) => {
         },
       };
   
-      // Add assigned users to the task
-if (assignedUsers && Array.isArray(assignedUsers)) {
-  // Fetch all users from the User collection
-  const allUsers = await User.find({});
+            // Add assigned users to the task
+      if (assignedUsers && Array.isArray(assignedUsers)) {
+        // Fetch all users from the User collection
+        const allUsers = await User.find({});
 
-  assignedUsers.forEach(username => {
-    // Find the user based on the username
-    const assignedUser = allUsers.find(user => user.username === username);
-  //  const isUserAlreadyInTask = foundTask.assignedUsers.some(user => user.userId.equals(assignedUser._id));
+        assignedUsers.forEach(username => {
+          // Find the user based on the username
+          const assignedUser = allUsers.find(user => user.username === username);
+        //  const isUserAlreadyInTask = foundTask.assignedUsers.some(user => user.userId.equals(assignedUser._id));
 
-    if (assignedUser) {
-      newTask.assignedUsers.push({
-        userId: assignedUser._id,
-        username: assignedUser.username,
-      });
+          if (assignedUser) {
+            newTask.assignedUsers.push({
+              userId: assignedUser._id,
+              username: assignedUser.username,
+            });
 
-      // Add to class only if not already present
-      const isUserAlreadyInClass = foundClass.assignedUsers.some(user => user.userId.equals(assignedUser._id));
-      if (!isUserAlreadyInClass) {
-        foundClass.assignedUsers.push({
-          userId: assignedUser._id,
-          username: assignedUser.username,
+            // Add to class only if not already present
+            const isUserAlreadyInClass = foundClass.assignedUsers.some(user => user.userId.equals(assignedUser._id));
+            if (!isUserAlreadyInClass) {
+              foundClass.assignedUsers.push({
+                userId: assignedUser._id,
+                username: assignedUser.username,
+              });
+            }
+          }
         });
       }
-    }
-  });
-}
 
-// Add the new task to the class
-foundClass.tasks.push(newTask);
+      // Add the new task to the class
+      foundClass.tasks.push(newTask);
 
-// Save the updated project document
-await project.save();
+      // Save the updated project document
+      await project.save();
 
-  
-      res.status(200).json({ message: 'Task added to class successfully', task: newTask });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  };
+        
+            res.status(200).json({ message: 'Task added to class successfully', task: newTask });
+          } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+          }
+        };
 
 
 
@@ -462,7 +466,7 @@ await project.save();
     try {
         const projectId = req.params.projectId;
         const classId = req.params.classId;
-        const projectManager = req.user;
+        const user = req.user;
 
         
 
@@ -497,7 +501,7 @@ await project.save();
       const projectId = req.params.projectId;
       const classId = req.params.classId;
       const taskId = req.params.taskId;
-      const projectManager = req.user;
+      const user = req.user;
   
       const project = await Project.findById(projectId);
   
@@ -648,12 +652,13 @@ const addUsersToTask = async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   };
+
   const getAllUsersInTask = async (req, res) => {
     try {
         const projectId = req.params.projectId;
         const classId = req.params.classId;
         const taskId = req.params.taskId;
-        const projectManager = req.user;
+        const user = req.user;
 
         const project = await Project.findById(projectId);
 
@@ -697,7 +702,7 @@ module.exports = {
   createClass,
    editClass,
    deleteClass,
-   getAllClassesByManager,
+   getAllClasses,
    getClassById,
    addTaskToClass,
    editTaskInClass,
