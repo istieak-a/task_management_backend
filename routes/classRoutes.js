@@ -20,13 +20,13 @@ router.get('/:projectId/:classId/getUsers',authMiddleware.verifyAdminManagerUser
 
 
 router.put('/:projectId/:classId/addTask',authMiddleware.verifymanagerToken,classContoller.addTaskToClass);
-router.post('/:projectId/:classId/:taskId/editTask',authMiddleware.verifymanagerToken,classContoller.editTaskInClass);
-router.delete('/:projectId/:classId/:taskId/delete',authMiddleware.verifymanagerToken,classContoller.deleteTaskFromClass);
+router.post('/:projectId/:classId/:taskId/editTask',authMiddleware.verifyManagerUserToken,classContoller.editTaskInClass);
+router.delete('/:projectId/:classId/:taskId/delete',authMiddleware.verifyManagerUserToken,classContoller.deleteTaskFromClass);
 router.get('/:projectId/:classId/getTasks',authMiddleware.verifyAdminManagerUserToken,classContoller.getAllTasksInClass);
 router.get('/:projectId/:classId/:taskId',authMiddleware.verifyAdminManagerUserToken,classContoller.getTaskByIdFromClass);
 
 
-router.post('/:projectId/:classId/:taskId/addUsers',authMiddleware.verifymanagerToken,classContoller.addUsersToTask);
+router.put('/:projectId/:classId/:taskId/addUsers',authMiddleware.verifymanagerToken,classContoller.addUsersToTask);
 router.delete('/:projectId/:classId/:taskId/deleteUsers',authMiddleware.verifymanagerToken,classContoller.deleteUsersFromTask);
 router.get('/:projectId/:classId/:taskId/getUsers',authMiddleware.verifyAdminManagerUserToken,classContoller.getAllUsersInTask);
 

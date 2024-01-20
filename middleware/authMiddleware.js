@@ -135,7 +135,7 @@ const verifyManagerUserToken = async (req, res, next) => {
       case 'projectManager':
         user = await ProjectManager.findById(decoded.id);
         break;
-      case 'user':
+      case 'member':
         user = await User.findById(decoded.id);
         break;
       default:
@@ -174,7 +174,7 @@ const verifyAdminUserToken = async (req, res, next) => {
       case 'admin':
         user = await Admin.findById(decoded.id);
         break;
-      case 'user':
+      case 'member':
         user = await User.findById(decoded.id);
         break;
       default:
@@ -215,7 +215,7 @@ const verifyAdminManagerUserToken = async (req, res, next) => {
       case 'projectManager':
         user = await ProjectManager.findById(decoded.id);
         break;
-      case 'user':
+      case 'member':
         user = await User.findById(decoded.id);
         break;
       default:

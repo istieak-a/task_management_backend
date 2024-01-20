@@ -171,11 +171,12 @@ const getUserRole = async (req, res) => {
       return res.status(404).send({ message: 'User not found' });
     }
 
-    res.status(200).send({ role: user.role });
+    res.status(200).send({ role: user.role, _id: user._id });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 };
+
 
 const getProjectManager = async (req, res) => {
   try {

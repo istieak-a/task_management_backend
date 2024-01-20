@@ -238,9 +238,7 @@ const updateTaskStatus = async (req, res) => {
     } else {
       res.status(200).json({ message: 'Task status updated successfully', task: foundTask });
     }
-    
-
-    
+        
   } 
   
   catch (error) {
