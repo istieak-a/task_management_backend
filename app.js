@@ -8,11 +8,16 @@ const taskRoutes = require('./routes/taskRoutes');
 const classRoutes = require('./routes/classRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const connection = require('./db');
+const cors = require('cors');
 const { scheduleTaskNotifications } = require('./notification');
 
 dotenv.config();
 
 const app = express();
+
+app.use(cors({
+  origin: '*',
+}));
 
 //middlewares
 app.use(bodyParser.json()); // Use body-parser middleware
