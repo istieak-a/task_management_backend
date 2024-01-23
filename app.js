@@ -50,7 +50,7 @@ connection().then(() => {
    // Schedule task notifications
     scheduleTaskNotifications();
     // Start the server only after successful database connection
-    const port = process.env.PORT || 5001;
+    const port = 5001;
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     });
