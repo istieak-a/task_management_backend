@@ -19,7 +19,7 @@ const app = express();
 
 app.use(bodyParser.json()); // Use body-parser middleware
 app.use(express.json());
-
+console.log("this is hamza yo")
 
 
 app.get('/', (req, res) => {
