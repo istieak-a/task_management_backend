@@ -2,10 +2,10 @@
   "name": "order1",
   "version": "1.0.0",
   "description": "The system aims to assist teams in organizing tasks, tracking progress, and facilitating communication.",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node index.js"
   },
   "author": "Limat Worlld",
   "license": "ISC",
