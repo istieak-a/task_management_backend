@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
@@ -17,10 +16,7 @@ const app = express();
 
 //middlewares
 
-app.use(cors());
-app.use(cors({
-  origin: 'https://task-management-frontend-dusky.vercel.app'
-}));
+
 app.use(bodyParser.json()); // Use body-parser middleware
 app.use(express.json());
 
