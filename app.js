@@ -18,6 +18,9 @@ const app = express();
 //middlewares
 
 app.use(cors());
+app.use(cors({
+  origin: 'https://task-management-backend-ten.vercel.app'
+}));
 app.use(bodyParser.json()); // Use body-parser middleware
 app.use(express.json());
 
