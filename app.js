@@ -7,6 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const classRoutes=require("./routes/classRoutes")
+const commentRoutes=require("./routes/commentRoutes");
 const connection =require("./db");
 const {scheduleTaskNotifications}=require('./notification');
 
@@ -32,6 +33,7 @@ app.use('/auth', authRoutes);
 app.use('/projects', projectRoutes);
 app.use('/class',classRoutes);
 app.use('/tasks', taskRoutes);
+app.use('/comments', commentRoutes);
 
 
 
