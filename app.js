@@ -23,8 +23,8 @@ console.log("this is hamza yo")
 
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Hello, World!' });
-});
+    res.send('Hello, World!');
+  });
   
 
 
@@ -57,4 +57,3 @@ connection().then(() => {
   }).catch(err => {
     console.error("Error connecting to the database:", err);
   });
-  
