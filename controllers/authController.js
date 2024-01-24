@@ -6,26 +6,32 @@ const {ProjectManager}=require("../models/Projectmanager")
 const authUtils = require('../utils/authUtils');
 
 const userregister = async (req, res) => {
-            try {
+  try {
+    const { username, password } = req.body;
 
-                const { username, password} = req.body;
-                
+    // Check if the username already exists
+    const existingUser = await User.findOne({ username });
 
-                const hashedPassword = await bcrypt.hash(password, 10);
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username already exists. Please choose a different one.' });
+    }
 
-                const user = new User({
-                  username,
-                  password: hashedPassword,
-                  role:'member',
-                });
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-                await user.save();
+    const user = new User({
+      username,
+      password: hashedPassword,
+      role: 'member',
+    });
 
-                res.status(201).json({ message: 'User registered successfully' });
-              } catch (error) {
-                res.status(500).json({ message: 'Internal server error' });
-              }
+    await user.save();
+
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message || 'Internal server error' });
+  }
 };
+
 
 const managerregister = async (req, res) => {
           try {
