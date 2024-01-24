@@ -368,7 +368,7 @@ const deleteUsersFromClass = async (req, res) => {
             res.status(200).json({ message: 'Task added to class successfully', task: newTask });
           } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
+            res.status(500).json({ message: error.message || 'Internal server error' });
           }
         };
 
