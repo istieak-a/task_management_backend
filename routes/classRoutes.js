@@ -19,7 +19,7 @@ router.delete('/:projectId/:classId/delete',authMiddleware.verifymanagerToken,cl
 router.get('/:projectId/:classId/getUsers',authMiddleware.verifyAdminManagerUserToken,classContoller.getAllUsersInClass);
 
 
-router.put('/:projectId/:classId/addTask',authMiddleware.verifymanagerToken,classContoller.addTaskToClass);
+router.put('/:projectId/:classId/addTask',authMiddleware.verifyAdminManagerUserToken,classContoller.addTaskToClass);
 router.post('/:projectId/:classId/:taskId/editTask',authMiddleware.verifyManagerUserToken,classContoller.editTaskInClass);
 router.delete('/:projectId/:classId/:taskId/delete',authMiddleware.verifyManagerUserToken,classContoller.deleteTaskFromClass);
 router.get('/:projectId/:classId/getTasks',authMiddleware.verifyAdminManagerUserToken,classContoller.getAllTasksInClass);
