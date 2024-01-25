@@ -4,10 +4,12 @@ const {User} = require('../models/User');
 const {Admin} =require("../models/Admin")
 const {ProjectManager}=require("../models/Projectmanager")
 const authUtils = require('../utils/authUtils');
+const passwordRegex = /^(?![0-9]+$)[A-Za-z0-9]+$/;
+const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 const userregister = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, username, password } = req.body;
 
     // Check if the username already exists
     const existingUser = await User.findOne({ username });
@@ -16,11 +18,20 @@ const userregister = async (req, res) => {
       return res.status(400).json({ message: 'Username already exists. Please choose a different one.' });
     }
 
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ message: 'Password must contain a combination of letters and numbers.' });
+    }
+    
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Please provide a valid email.' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
       username,
       password: hashedPassword,
+      email,
       role: 'member',
     });
 
@@ -36,14 +47,22 @@ const userregister = async (req, res) => {
 const managerregister = async (req, res) => {
           try {
 
-            const { username, password} = req.body;
+            const { username, password, email} = req.body;
            
+            if (!passwordRegex.test(password)) {
+              return res.status(400).json({ message: 'Password must contain a combination of letters and numbers.' });
+            }
+            
+            if (!emailRegex.test(email)) {
+              return res.status(400).json({ message: 'Please provide a valid email.' });
+            }
 
             const hashedPassword = await bcrypt.hash(password, 10);
 
             const user = new ProjectManager({
               username,
               password: hashedPassword,
+              email,
               role:'projectManager',
             });
 
@@ -59,10 +78,18 @@ const adminregister = async (req, res) => {
  
             try {
               console.log('Received data:', req.body);
-              const { username, password } = req.body;
+              const { username, password, email } = req.body;
              
               if (!username || !password) {
                 return res.status(400).json({ message: 'Username and password are required' });
+              }
+
+              if (!passwordRegex.test(password)) {
+                return res.status(400).json({ message: 'Password must contain a combination of letters and numbers.' });
+              }
+              
+              if (!emailRegex.test(email)) {
+                return res.status(400).json({ message: 'Please provide a valid email.' });
               }
 
               const hashedPassword = await bcrypt.hash(password, 10);
@@ -70,6 +97,7 @@ const adminregister = async (req, res) => {
               const user = new Admin({
                 username,
                 password: hashedPassword,
+                email,
                 role: 'admin',
               });
 
@@ -78,7 +106,7 @@ const adminregister = async (req, res) => {
               res.status(201).json({ message: 'Admin registered successfully' });
             } catch (error) {
               console.error('Error during admin registration:', error);
-              res.status(500).json({ message: 'Internal server error' });
+              res.status(500).json({ message: error.message || 'Internal server error' });
             }
 };
 

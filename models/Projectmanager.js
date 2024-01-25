@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 
 const projectManagerSchema = new mongoose.Schema({
-    username: { type: String, unique: true, required: true },
+    username: { type: String },
     password: { type: String, required: true },
     role: { type: String, default: 'projectManager' },
     // role: { type: String, enum: [ 'projectManager'], required: true },

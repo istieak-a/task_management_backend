@@ -45,7 +45,7 @@ const uploadFile = async (req, res) => {
     upload.single('file')(req, res, async (err) => {
       if (err) {
         console.error(err);
-        return res.status(500).json({ message: 'File upload failed' });
+        return res.status(500).json({ message: err.message });
       }
       console.log(req.file)
       const newComment = new Comment({
