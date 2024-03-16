@@ -2,7 +2,6 @@ const Comment = require('../models/Comment');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const os = require('os');
 
 const createComment = async (req, res) => {
   try {
@@ -29,8 +28,7 @@ const getAllComments = async (req, res) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const tmpDir = os.tmpdir(); // Get the system's temporary directory
-    cb(null, tmpDir);
+    cb(null, '/'); // Specify the directory where you want to store the files
   },
   filename: (req, file, cb) => {
     const filename = `${Date.now()}-${file.originalname}`;
