@@ -28,7 +28,8 @@ const getAllComments = async (req, res) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Specify the directory where you want to store the files
+    const uploadDir = path.join(__dirname, '..', 'uploads'); // Specify the directory relative to the current file
+    cb(null, uploadDir); // Pass the upload directory path to multer
   },
   filename: (req, file, cb) => {
     const filename = `${Date.now()}-${file.originalname}`;
