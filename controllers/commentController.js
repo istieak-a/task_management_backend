@@ -48,6 +48,7 @@ const uploadFile = async (req, res) => {
       if (err) {
         console.error(err);
         return res.status(500).json({ message: err.message });
+        newComment.save();
       }
       console.log(req.file)
       const newComment = new Comment({
